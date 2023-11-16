@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://cxc1so70dmtmi"]
+
+[ext_resource type="Script" path="res://main.cs" id="1_gr6p7"]
+[ext_resource type="PackedScene" uid="uid://bllj57luujild" path="res://joueur.tscn" id="2_25cda"]
+[ext_resource type="PackedScene" uid="uid://c6hntdp8a14n0" path="res://ennemy.tscn" id="2_jifil"]
+[ext_resource type="PackedScene" uid="uid://4xp1qjcu1vgx" path="res://hud.tscn" id="4_mmogy"]
+
+[sub_resource type="Curve2D" id="Curve2D_p1qjm"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -21.7778, -61.6, 0, 0, 0, 0, 466.667, -61.6, 0, 0, 0, 0, 466.667, 765.6, 0, 0, 0, 0, -24.8889, 765.6, 0, 0, 0, 0, -21.7778, -61.6)
+}
+point_count = 5
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_gr6p7")
+EnnemyScene = ExtResource("2_jifil")
+metadata/_edit_horizontal_guides_ = [-120.0]
+
+[node name="Joueur" parent="." instance=ExtResource("2_25cda")]
+position = Vector2(554, 282)
+
+[node name="EnnemyTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="ScoreTimer" type="Timer" parent="."]
+
+[node name="StartTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="StartPosition" type="Marker2D" parent="."]
+position = Vector2(552, 312)
+
+[node name="EnnemyPath" type="Path2D" parent="."]
+scale = Vector2(2.57143, 0.909091)
+curve = SubResource("Curve2D_p1qjm")
+
+[node name="EnnemySpawnPosition" type="PathFollow2D" parent="EnnemyPath"]
+position = Vector2(-21.7778, -61.6)
+
+[node name="HUD" parent="." instance=ExtResource("4_mmogy")]
+
+[connection signal="Hit" from="Joueur" to="." method="_on_joueur_hit"]
+[connection signal="body_entered" from="Joueur" to="Joueur" method="_on_body_entered"]
+[connection signal="timeout" from="EnnemyTimer" to="." method="_on_ennemy_timer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_score_timer_timeout"]
+[connection signal="timeout" from="StartTimer" to="." method="_on_start_timer_timeout"]
+[connection signal="StartGame" from="HUD" to="." method="_on_hud_start_game"]
